@@ -7,6 +7,10 @@ var polygon = null;
 
 var placeMarkers = [];
 
+
+
+
+
 //---- ViewModel -----
 var viewModel = function() {
   var self = this;
@@ -39,31 +43,31 @@ var viewModel = function() {
   this.hideMarkers = function (markers) {
     for (var i = 0; i < markers.length; i++) {
       markers[i].setMap(null);
+      delete markers[i];
     }
   };
 
 };
 
-
 function initMap() {
 
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 34.0539005, lng: -84.7401179},
-    zoom: 10,
-    //styles: styles,
-    mapTypeControl: false
-  });
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: {lat: 34.0539005, lng: -84.7401179},
+      zoom: 10,
+      //styles: styles,
+      mapTypeControl: false
+    });
 
-  var locations = [
+    var largeInfowindow = new google.maps.InfoWindow();
+
+    var locations = [
     {title: 'Oregon Park', type: 'Disc Golf', location: {lat: 33.9581611, lng: -84.6679743}},
     {title: 'Legacy Park', type: 'Disc Golf', location: {lat: 34.0549463, lng: -84.6358387}},
     {title: 'Kennesaw Mountain', type: 'Hiking', location: {lat: 33.9830771, lng: -84.580117}},
     {title: 'Noses Creek Trail', type: 'Hiking', location: {lat: 33.962692, lng: -84.5953495}},
     {title: 'Park Marina at Lake Allatoona', type: 'Aquatics', location: {lat: 34.1653664, lng: -84.7201781}},
     {title: 'Lake Allatoona Kayaking', type: 'Aquatics', location: {lat: 34.2028009, lng: -84.5911615}}
-  ];
-
-  var largeInfowindow = new google.maps.InfoWindow();
+    ];
 
   // The following group uses the location array to create an array of markers on initialize.
   for (var i = 0; i < locations.length; i++) {
@@ -83,10 +87,10 @@ function initMap() {
     marker.addListener('click', function() {
       populateInfoWindow(this, largeInfowindow);
     });
-
   };
-
 };
+
+
 
 ko.applyBindings( new viewModel() );
 
