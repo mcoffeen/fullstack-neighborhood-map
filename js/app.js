@@ -1,11 +1,19 @@
-// ---- Model -----
 var map;
 
 var markers = [];
 
-var polygon = null;
+//var polygon = null;
 
-var placeMarkers = [];
+//var placeMarkers = [];
+
+var locations = [
+    {title: 'Oregon Park', type: 'Disc Golf', location: {lat: 33.9581611, lng: -84.6679743}},
+    {title: 'Legacy Park', type: 'Disc Golf', location: {lat: 34.0549463, lng: -84.6358387}},
+    {title: 'Kennesaw Mountain', type: 'Hiking', location: {lat: 33.9830771, lng: -84.580117}},
+    {title: 'Noses Creek Trail', type: 'Hiking', location: {lat: 33.962692, lng: -84.5953495}},
+    {title: 'Park Marina at Lake Allatoona', type: 'Aquatics', location: {lat: 34.1653664, lng: -84.7201781}},
+    {title: 'Lake Allatoona Kayaking', type: 'Aquatics', location: {lat: 34.2028009, lng: -84.5911615}}
+  ];
 
 //---- ViewModel -----
 var viewModel = function() {
@@ -24,24 +32,6 @@ var viewModel = function() {
   document.getElementById("menuIcon").style.display = "inline";
   };
 
-  // This function will loop through the markers array and display them all.
-  this.showMarkers = function () {
-    var bounds = new google.maps.LatLngBounds();
-    // Extend the boundaries of the map for each marker and display the marker
-    for (var i = 0; i < markers.length; i++) {
-      markers[i].setMap(map);
-      bounds.extend(markers[i].position);
-    }
-    map.fitBounds(bounds, 50);
-  };
-
-  // This function will loop through the listings and hide them all.
-  this.hideMarkers = function (markers) {
-    for (var i = 0; i < markers.length; i++) {
-      markers[i].setMap(null);
-    }
-  };
-
 };
 
 
@@ -53,15 +43,6 @@ function initMap() {
     //styles: styles,
     mapTypeControl: false
   });
-
-  var locations = [
-    {title: 'Oregon Park', type: 'Disc Golf', location: {lat: 33.9581611, lng: -84.6679743}},
-    {title: 'Legacy Park', type: 'Disc Golf', location: {lat: 34.0549463, lng: -84.6358387}},
-    {title: 'Kennesaw Mountain', type: 'Hiking', location: {lat: 33.9830771, lng: -84.580117}},
-    {title: 'Noses Creek Trail', type: 'Hiking', location: {lat: 33.962692, lng: -84.5953495}},
-    {title: 'Park Marina at Lake Allatoona', type: 'Aquatics', location: {lat: 34.1653664, lng: -84.7201781}},
-    {title: 'Lake Allatoona Kayaking', type: 'Aquatics', location: {lat: 34.2028009, lng: -84.5911615}}
-  ];
 
   var largeInfowindow = new google.maps.InfoWindow();
 
@@ -83,9 +64,27 @@ function initMap() {
     marker.addListener('click', function() {
       populateInfoWindow(this, largeInfowindow);
     });
-
   };
 
+  showMarkers();
+};
+
+// This function will loop through the markers array and display them all.
+function showMarkers() {
+  var bounds = new google.maps.LatLngBounds();
+  // Extend the boundaries of the map for each marker and display the marker
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(map);
+    bounds.extend(markers[i].position);
+  }
+  map.fitBounds(bounds, 50);
+};
+
+  // This function will loop through the listings and hide them all.
+function hideMarkers(markers) {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
+  }
 };
 
 ko.applyBindings( new viewModel() );
