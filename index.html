@@ -12,33 +12,42 @@
 </head>
 <body>
     <div class="container-fluid">
-        <div class="col-xs-2" id="side-bar">
-            <div class="row text-right">
-                <span data-bind="click: closeSideBar" class="glyphicon glyphicon-remove close closeButton"></span>
+            <div class="col-xs-2" id="side-bar">
+                <div class="row text-right">
+                    <span data-bind="click: closeSideBar" class="glyphicon glyphicon-remove close closeButton"></span>
+                </div>
+                <div class="row text-center">
+                    <h2 class="side-bar-header">Neighborhood Map</h2><hr>
+                </div>
+                <div class="row text-center">
+                    <h4>Filter Map by Activity</h4>
+                </div>
+                <div class="row text-center">
+                    <select data-bind="options: uniqueTypes, value: selectedType, event: {change: selectedTypeChanged}"></select><br><br>
+                    <strong>Locations Currently Displayed</strong>
+                    <ul data-bind="foreach: locationList" class="text-left">
+                        <li><span data-bind="text: type, click: $root.filterType"></span> - <span data-bind="text: title, click: $root.toggleBounce"></span></li>
+                    </ul>
+                    <button data-bind="click: showAllLocations" class="btn btn-success">Show All Locations</button>
+                    <button data-bind="click: hideAllLocations" class="btn btn-danger">Hide All Locations</button>
+                </div>
             </div>
-            <div class="row text-center">
-                <h2>Neighborhood Map</h2><hr>
-            </div>
-            <div class="row text-center">
-                <button data-bind="click: showMarkers" class="btn btn-primary">Show Locations</button>
-                <button data-bind="click: hideMarkers(markers)" class="btn btn-primary">Hide Locations</button>
-            </div>
-            <div class="row"><hr></div>
-            <div class="row">
-                <ul data-bind="foreach: locations">
-                    <li data-bind="text: title"></li>
-                </ul>
-            </div>
+            <div class="col-xs-10" id="map"></div>
+        <!--
+        <div class="menu-button">
+            <button class="btn btn-success">
+                <span class="glyphicon glyphicon-menu-hamburger"></span>
+            </button>
         </div>
-        <div class="col-xs-10" id="map"></div>
+        -->
     </div>
-
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="js/lib/knockout-3.2.0.js"></script>
     <script src="js/app.js"></script>
     <script async defer
         src=
-        "https://maps.googleapis.com/maps/api/js?libraries=places,geometry,drawing&key=AIzaSyBbQvUb4c9ozuKjPWeGfdFGpnsfDY30aik&v=3&callback=initMap">
+        "https://maps.googleapis.com/maps/api/js?libraries=places,geometry,drawing&key=AIzaSyBbQvUb4c9ozuKjPWeGfdFGpnsfDY30aik&v=3&callback=initMap" onerror="gMapsError()">
     </script>
-
 </body>
 </html>
