@@ -12,34 +12,42 @@
 </head>
 <body>
     <div class="container-fluid">
-            <div class="col-xs-2" id="side-bar">
-                <div class="row text-right">
-                    <span data-bind="click: closeSideBar" class="glyphicon glyphicon-remove close closeButton"></span>
-                </div>
-                <div class="row text-center">
-                    <h2 class="side-bar-header">Neighborhood Map</h2><hr>
-                </div>
-                <div class="row text-center">
-                    <h4>Filter Map by Activity</h4>
-                </div>
-                <div class="row text-center">
-                    <select data-bind="options: uniqueTypes, value: selectedType, event: {change: selectedTypeChanged}"></select><br><br>
-                    <strong>Locations Currently Displayed</strong>
-                    <ul data-bind="foreach: locationList" class="text-left">
-                        <li><span data-bind="text: type, click: $root.filterType"></span> - <span data-bind="text: title, click: $root.toggleBounce"></span></li>
-                    </ul>
-                    <button data-bind="click: showAllLocations" class="btn btn-success">Show All Locations</button>
-                    <button data-bind="click: hideAllLocations" class="btn btn-danger">Hide All Locations</button>
-                </div>
+        <!-- Sidebar Filter Options -->
+        <div id="side-bar">
+            <div class="row text-right">
+                <span data-bind="click: closeSideBar" class="glyphicon glyphicon-remove close closeButton"></span>
             </div>
-            <div class="col-xs-10" id="map"></div>
-        <!--
-        <div class="menu-button">
-            <button class="btn btn-success">
-                <span class="glyphicon glyphicon-menu-hamburger"></span>
-            </button>
+            <div class="row text-center">
+                <h2 class="side-bar-header">Filter Options</h2><hr>
+            </div>
+            <div class="row text-center">
+                <h4>Filter Map by Activity</h4>
+            </div>
+            <div class="row text-center">
+                <select data-bind="options: uniqueTypes, value: selectedType, event: {change: selectedTypeChanged}" id="filter"></select><hr>
+                <h5>Locations Currently Displayed<br><small style="color: black;">Click Location to Highlight on Map</small></h5>
+                <ul data-bind="foreach: locationList" class="text-left">
+                    <li><span data-bind="text: type, click: $root.filterType"></span> - <span data-bind="text: title, click: $root.toggleBounce"></span></li>
+                </ul>
+            </div>
+            <div class="row text-center">
+                <button data-bind="click: showAllLocations" class="btn btn-success">Show All Locations</button>
+                <button data-bind="click: hideAllLocations" class="btn btn-danger hideLocButton">Hide All Locations</button>
+            </div>
         </div>
-        -->
+
+        <!-- Main Page Content -->
+        <div class="row">
+            <div class="col-xs-1">
+                <button class="btn btn-secondary menu-button" data-bind="click: openSideBar">
+                    <span class="glyphicon glyphicon-menu-hamburger"></span>
+                </button>
+            </div>
+            <div class="col-xs header text-center">
+                <span id="title">Neighborhood Map</span>
+            </div>
+        </div>
+        <div class="col-xs-12" id="map"></div>
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>

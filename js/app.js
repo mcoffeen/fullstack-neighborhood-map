@@ -153,16 +153,11 @@ var viewModel = function() {
   };
 
   this.openSideBar = function() {
-    document.getElementById("side-bar").className = "col-xs-3";
-    document.getElementById("map").className = "col-xs-9";
-    document.getElementById("side-bar").style.display = "inline";
-    document.getElementById("menuIcon").style.display = "none";
+    document.getElementById("side-bar").style.width = "320px";
   };
 
   this.closeSideBar = function() {
-  document.getElementById("map").className = "col-xs-12";
-  document.getElementById("side-bar").style.display = "none";
-  document.getElementById("menuIcon").style.display = "inline";
+    document.getElementById("side-bar").style.width = "0";
   };
 
 };
