@@ -1,3 +1,5 @@
+// ----- Model -----
+
 var map;
 
 var markers = [];
@@ -5,12 +7,36 @@ var markers = [];
 var allTypes = [];
 
 var locations = [
-    {title: 'Oregon Park', type: 'Disc Golf', location: {lat: 33.9581611, lng: -84.6679743}},
-    {title: 'Legacy Park', type: 'Disc Golf', location: {lat: 34.0549463, lng: -84.6358387}},
-    {title: 'Kennesaw Mountain', type: 'Hiking', location: {lat: 33.9830771, lng: -84.580117}},
-    {title: 'Noses Creek Trail', type: 'Hiking', location: {lat: 33.962692, lng: -84.5953495}},
-    {title: 'Park Marina at Lake Allatoona', type: 'Aquatics', location: {lat: 34.1653664, lng: -84.7201781}},
-    {title: 'Lake Allatoona Kayaking', type: 'Aquatics', location: {lat: 34.2028009, lng: -84.5911615}}
+    {
+      title: 'Oregon Park',
+      type: 'Disc Golf',
+      location: {lat: 33.9581611, lng: -84.6679743}
+    },
+    {
+      title: 'Legacy Park',
+      type: 'Disc Golf',
+      location: {lat: 34.0549463, lng: -84.6358387}
+    },
+    {
+      title: 'Kennesaw Mountain',
+      type: 'Hiking',
+      location: {lat: 33.9830771, lng: -84.580117}
+    },
+    {
+      title: 'Noses Creek Trail',
+      type: 'Hiking',
+      location: {lat: 33.962692, lng: -84.5953495}
+    },
+    {
+      title: 'Park Marina at Lake Allatoona',
+      type: 'Aquatics',
+      location: {lat: 34.1653664, lng: -84.7201781}
+    },
+    {
+      title: 'Lake Allatoona Kayaking',
+      type: 'Aquatics',
+      location: {lat: 34.2028009, lng: -84.5911615}
+    }
   ];
 
 var Location = function(data) {
@@ -19,7 +45,9 @@ var Location = function(data) {
   this.location = ko.observable(data.location);
 };
 
+
 //---- ViewModel -----
+
 var viewModel = function() {
   var self = this;
 
@@ -51,9 +79,9 @@ var viewModel = function() {
         self.locationList.push( new Location(locationItem) );
       });
 
-      // iterate backwards through locationList to remove any locations that don't match the type
-      // of the selectedLocation.  Must iterate backwards to avoid the array being re-indexed when
-      // using the splice() method.
+      // iterate backwards through locationList to remove any locations that
+      // don't match the type of the selectedLocation.  Must iterate backwards
+      // to avoid the array being re-indexed when using the splice() method.
       var i = self.locationList().length
       while (i--) {
         if (self.locationList()[i].type() != self.selectedType()) {
@@ -85,7 +113,8 @@ var viewModel = function() {
     });
   };
 
-  // This function will hide all markers and remove all locations from locationList
+  // This function will hide all markers and remove all
+  // locations from locationList
   this.hideAllLocations = function() {
     for (var i = 0; i < markers.length; i++) {
       markers[i].infowindow.close();
@@ -120,10 +149,6 @@ var viewModel = function() {
     };
   };
 
-  self.showFood = function() {
-
-  }
-
   this.openSideBar = function() {
     document.getElementById("side-bar").style.width = "320px";
   };
@@ -134,7 +159,7 @@ var viewModel = function() {
 
 };
 
-// ----- Initialize Google Map-------
+// ----- Google Maps API -------
 
 function initMap() {
   mapOptions = {
@@ -210,24 +235,31 @@ function populateInfoWindow(marker, infowindow, ll) {
   $.ajax({
     url: fourSquareURL,
     dataType: 'json',
-    data: 'v=20180916' + '&ll=' + ll + '&section=food&limit=10&time=any&day=any&client_id='+CLIENT_ID+'&client_secret='+CLIENT_SECRET,
+    data: 'v=20180916' + '&ll=' + ll + '&section=food&limit=10&time=any' +
+      '&day=any&client_id='+CLIENT_ID+'&client_secret='+CLIENT_SECRET,
     async: true,
 
     success: function (data) {
       var foodName = data.response.groups[0].items[0].venue.name;
       // if address for location is undefined show lat/lon
-      if (data.response.groups[0].items[0].venue.location.address == undefined) {
-        var foodAddress = data.response.groups[0].items[0].venue.location.lat + ", " + data.response.groups[0].items[0].venue.location.lng;
+      if (data.response.groups[0].items[0].venue.location.address
+        == undefined) {
+        var foodAddress = data.response.groups[0].items[0].venue.location.lat +
+          ", " + data.response.groups[0].items[0].venue.location.lng;
         } else {
-          var foodAddress = data.response.groups[0].items[0].venue.location.address;
+          var foodAddress =
+            data.response.groups[0].items[0].venue.location.address;
         }
 
       // set the content of the infoWindow
-      infowindow.setContent('<div><h4>' + marker.title + '</h4><h6>' + marker.type + '<hr><h6>Top Food Location Nearby:</h6>' + foodName + '<br>' + foodAddress + '<br><br><img src="img/powered-by-foursquare-grey.png"></div>');
+      infowindow.setContent('<div><h4>' + marker.title + '</h4><h6>' +
+        marker.type + '<hr><h6>Top Food Location Nearby:</h6>' + foodName +
+        '<br>' + foodAddress +
+        '<br><br><img src="img/powered-by-foursquare-grey.png"></div>');
     },
 
     error: function(error) {
-      alert('No response from Foursquare');
+      alert('Error received from Foursquare');
     }
   });
 
