@@ -27,7 +27,7 @@
                 <select data-bind="options: uniqueTypes, value: selectedType, event: {change: selectedTypeChanged}" id="filter"></select><hr>
                 <h5>Locations Currently Displayed<br><small style="color: black;">Click Location to Highlight on Map</small></h5>
                 <ul data-bind="foreach: locationList" class="text-left">
-                    <li><span data-bind="text: type, click: $root.filterType"></span> - <span data-bind="text: title, click: $root.toggleBounce"></span></li>
+                    <li><span data-bind="text: type"></span> - <span data-bind="text: title, click: $root.toggleBounce"></span></li>
                 </ul>
             </div>
             <div class="row text-center">

@@ -29,7 +29,6 @@ var viewModel = function() {
     self.locationList.push( new Location(locationItem) );
   });
 
-
   this.selectedType = ko.observable();
 
   this.selectedTypeChanged = function() {
@@ -44,7 +43,7 @@ var viewModel = function() {
           bounds.extend(markers[i].position);
           }
       };
-      map.fitBounds(bounds, 50,50,50,50);
+      map.fitBounds(bounds, 50);
 
       // restores locationList to original locations
       this.locationList([]);
@@ -65,37 +64,6 @@ var viewModel = function() {
     } else { this.showAllLocations();
     };
   };
-
-
-/*  this block of code works to filter the map by clicking the activity type in the list
-    Don't delete this until it works using the select filter.
-
-  this.selectedLocation = ko.observable();
-
-  this.filterType = function(clickedLocation) {
-    self.selectedLocation(clickedLocation);
-    //console.log('=======> The selected location type is: ' + self.selectedLocation().type());
-    // hides markers that don't match the selected type
-    for (var i = 0; i < markers.length; i++) {
-      if (markers[i].type != self.selectedLocation().type()){
-        markers[i].setMap(null);
-      } else {
-        markers[i].setMap(map);
-        }
-      };
-
-    // iterate backwards through locationList to remove any locations that don't match the type
-    // of the selectedLocation.  Must iterate backwards to avoid the array being re-indexed when
-    // using the splice() method.
-    var i = self.locationList().length
-    while (i--) {
-      if (self.locationList()[i].type() != self.selectedLocation().type()) {
-        //console.log( self.locationList()[i].title() + ' has been removed.');
-        self.locationList.splice( i, 1);
-      };
-    };
-  };
-*/
 
   // This function will loop through the locations array and display them all.
   this.showAllLocations = function() {
@@ -139,18 +107,22 @@ var viewModel = function() {
   this.uniqueTypes( allTypes.filter( onlyUnique ));
 
   self.toggleBounce = function(location) {
-    console.log(location.title());
-    //var infoWindow = new google.maps.InfoWindow();
+    //console.log(location.title());
     for (var i = 0; i < markers.length; i++) {
       if (markers[i].title != location.title()) {
         markers[i].setAnimation(null);
         markers[i].infowindow.close();
       } else {
         markers[i].setAnimation(google.maps.Animation.BOUNCE);
-        populateInfoWindow(markers[i], markers[i].infowindow);
+        var ll = location.location().lat + ',' + location.location().lng;
+        populateInfoWindow(markers[i], markers[i].infowindow, ll);
       }
     };
   };
+
+  self.showFood = function() {
+
+  }
 
   this.openSideBar = function() {
     document.getElementById("side-bar").style.width = "320px";
@@ -162,6 +134,7 @@ var viewModel = function() {
 
 };
 
+// ----- Initialize Google Map-------
 
 function initMap() {
   mapOptions = {
@@ -196,9 +169,10 @@ function initMap() {
     marker.setMap(map);
     bounds.extend(markers[i].position);
 
-    // Create an onclick event to open the large infowindow at each marker.
+    // Create an onclick event to open the infowindow at each marker.
     marker.addListener('click', function() {
-      populateInfoWindow(this, marker.infowindow);
+      var ll = this.position.lat() + ',' + this.position.lng();
+      populateInfoWindow(this, marker.infowindow, ll);
       toggleBounce(this);
     });
 
@@ -217,16 +191,48 @@ function toggleBounce(marker) {
     markers[i].setAnimation(null);
   };
   marker.setAnimation(google.maps.Animation.BOUNCE);
-  console.log('Currently bouncing: ' + marker.title);
 };
 
 
-function populateInfoWindow(marker, infowindow) {
+function populateInfoWindow(marker, infowindow, ll) {
+  // close all infowindows first
   for (var i = 0; i < markers.length; i++) {
     markers[i].infowindow.close();
   };
+
+  // get Foursquare data for most popular food venue nearby
+  var fourSquareURL = 'https://api.foursquare.com/v2/venues/explore';
+  var CLIENT_ID = 'RJNK1JRB4UMBBKD1O4QR23EJVNZAUAGHAUYCLMHPMW5IOR2B';
+  var CLIENT_SECRET = 'FFC5V4DRBETPVC4ZMLWZW2AGT3XCW0RZY3OUED1LHBPPLYUT';
+
+  //console.log('Location passed to Foursquare: ' + ll);
+
+  $.ajax({
+    url: fourSquareURL,
+    dataType: 'json',
+    data: 'v=20180916' + '&ll=' + ll + '&section=food&limit=10&time=any&day=any&client_id='+CLIENT_ID+'&client_secret='+CLIENT_SECRET,
+    async: true,
+
+    success: function (data) {
+      var foodName = data.response.groups[0].items[0].venue.name;
+      // if address for location is undefined show lat/lon
+      if (data.response.groups[0].items[0].venue.location.address == undefined) {
+        var foodAddress = data.response.groups[0].items[0].venue.location.lat + ", " + data.response.groups[0].items[0].venue.location.lng;
+        } else {
+          var foodAddress = data.response.groups[0].items[0].venue.location.address;
+        }
+
+      // set the content of the infoWindow
+      infowindow.setContent('<div><h4>' + marker.title + '</h4><h6>' + marker.type + '<hr><h6>Top Food Location Nearby:</h6>' + foodName + '<br>' + foodAddress + '<br><br><img src="img/powered-by-foursquare-grey.png"></div>');
+    },
+
+    error: function(error) {
+      alert('No response from Foursquare');
+    }
+  });
+
+  // open infowindow for clicked marker
   infowindow.marker= marker;
-  infowindow.setContent('<div>' + marker.title + '</div>');
   infowindow.open(map, marker);
 };
 
